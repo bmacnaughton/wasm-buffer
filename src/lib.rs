@@ -172,6 +172,8 @@ pub struct Scanner {
   prev_char: u8,
 }
 
+const DASH: u8 = '-' as u8;
+
 #[wasm_bindgen]
 impl Scanner {
   #[wasm_bindgen(constructor)]
@@ -181,7 +183,7 @@ impl Scanner {
         let stop_char_code: u8 = stop_chars.get_index(ix);
         bad_chars[stop_char_code as usize] = true;
       }
-      Scanner { bad_chars: bad_chars, prev_char: 0xFF }
+      Scanner {bad_chars: bad_chars, prev_char: 0xFF;}
   }
 
   pub fn get_flag(&self, ix: usize) -> bool {
@@ -194,7 +196,7 @@ impl Scanner {
       if self.bad_chars[byte as usize] {
         return true;
       }
-      if (byte == 45 && self.prev_char == 45) {
+      if (byte == DASH && self.prev_char == DASH) {
         return true;
       }
       self.prev_char = byte;
