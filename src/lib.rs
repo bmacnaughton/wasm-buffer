@@ -108,7 +108,6 @@ pub fn is_suspicious_2(js_str: &js_sys::JsString) -> bool {  // this is way slow
 
 
 use js_sys::{ArrayBuffer, Uint8Array};
-//use crate::wasm_bindgen::JsCast;
 
 #[wasm_bindgen]
 extern "C" {
@@ -126,33 +125,14 @@ extern "C" {
 
 #[wasm_bindgen]
 pub fn len(buffer: &Buffer) -> u32 {
-  //let ab: js_sys::ArrayBuffer = buffer.buffer();
+  //let abp: js_sys::ArrayBuffer = buffer.buffer();
   let abp = buffer.buffer();
 
-  //unsafe {
-  //  let p = std::slice::from_raw_parts(&abp, buffer.length() as usize);
-  //  return *p.offset(0);
-  //}
-  //use crate::wasm_bindgen::JsCast;
-  //let p: &u8 = abp.unchecked_ref::<u8>();
-  //let mut i: u32 = 0;
-  //for c in abp.iter() {
-  //  i = i + 1;
-  //}
-  //return i;
-
   abp.byte_length()
-  //let a = &ab as [u8];
-  //let array = &mut ab.value_of();
-  //let array = &mut ab.unchecked_into::<[u8]>();
-  //return array[1];
-
-  //buffer.length()
 }
 
 #[wasm_bindgen]
 pub fn ix(buffer: &Buffer, ix: usize) -> u8 {
-  let abp = buffer.buffer();
   // let vec: Vec<u8> =
   let ui8: Uint8Array = Uint8Array::new_with_byte_offset_and_length(
     &buffer.buffer(),
@@ -183,20 +163,20 @@ impl Scanner {
         let stop_char_code: u8 = stop_chars.get_index(ix);
         bad_chars[stop_char_code as usize] = true;
       }
-      Scanner {bad_chars: bad_chars, prev_char: 0xFF;}
+      Scanner {bad_chars: bad_chars, prev_char: 0xFF}
   }
 
   pub fn get_flag(&self, ix: usize) -> bool {
       self.bad_chars[ix]
   }
 
-  pub fn has_suspicious(&mut self, bytes: js_sys::Uint8Array) -> bool {
+  pub fn suspicious(&mut self, bytes: js_sys::Uint8Array) -> bool {
     for ix in 0..bytes.length() as u32 {
       let byte = bytes.get_index(ix);
       if self.bad_chars[byte as usize] {
         return true;
       }
-      if (byte == DASH && self.prev_char == DASH) {
+      if byte == DASH && self.prev_char == DASH {
         return true;
       }
       self.prev_char = byte;
