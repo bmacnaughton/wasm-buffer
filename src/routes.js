@@ -6,19 +6,12 @@ const path = require('path');
 const router = require('express').Router();
 const { processArrayBodyJS } = require('./bodyProcessorJS');
 
-// placeholder
-class Scanner {
-  constructor(stopChars) {
-    this.stopChars = stopChars;
-  }
-}
-
 const scanners = {};
 scanners.wasm = { Scanner: require('../pkg').Scanner };
 scanners.napi = {
   Scanner: require('../package-template.linux-x64-gnu.node').Scanner
 };
-scanners.js = { Scanner };
+scanners.js = { Scanner: require('./scanner.js') };
 
 scanners.js.stopChars = ";$'</\\&#%>=";
 scanners.napi.stopChars = Buffer.from(scanners.js.stopChars);
@@ -38,12 +31,11 @@ router.post('/echo', (req, res, next) => {
 });
 
 router.post('/scan/:how', async function (req, res) {
+  const start = process.hrtime.bigint();
   const s = await processBodyUsing(req.params.how, req);
-  if (s) {
-    res.send('it was suspicious\n');
-  } else {
-    res.send('it was not suspicious\n');
-  }
+  const delta = process.hrtime.bigint() - start;
+
+  res.send({suspicious: s, time: Number(delta)});
 });
 
 async function processBodyUsing(type, req) {
