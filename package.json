@@ -1,7 +1,7 @@
 {
-  "name": "request-filter-wasm",
+  "name": "wasm-buffer",
   "version": "1.0.0",
-  "description": "POC to try filtering the JSON body when in Protect mode",
+  "description": "quick pass over buffers checking for suspicious characters",
   "main": "src/app.js",
   "directories": {
     "test": "tests"

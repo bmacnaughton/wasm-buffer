@@ -1,4 +1,5 @@
-/target
-/pkg
-/uploadedFiles
+target
+pkg
+uploadedFiles
+node_modules
 Cargo.lock

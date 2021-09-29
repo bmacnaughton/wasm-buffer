@@ -5,7 +5,7 @@ const path = require('path');
 const app = express();
 const port = 3000
 
-app.use('/routes', require('./routes'));
+app.use('/test', require('./routes'));
 
 app.post('/store-to-file', (req, res, next) => {
     req.pipe(fs.createWriteStream(path.join('./uploadedFiles', Date.now().toString() + '.txt')));
